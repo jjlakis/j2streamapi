@@ -10,22 +10,23 @@ import (
 )
 
 type srsClientResponse struct {
-	code    int               `json:"code"`
-	server  int               `json:"server"`
-	clients []srsSingleClient `json:"$clients"`
+	Code    int64             `json:"code"`
+	Server  int64             `json:"server"`
+	Clients []srsSingleClient `json:"clients"`
 }
 
 type srsSingleClient struct {
-	id         string  `json:"id"`
-	vhost      string  `json:"vhost"`
-	ip         string  `json: "stream"`
-	pageUrl    string  `json: "ip"`
-	swfUrl     string  `json: "pageUrl"`
-	tcUrl      string  `json: "swfUrl"`
-	url        string  `json: "tcUrl"`
-	streamType string  `json: "type"`
-	publish    bool    `json: "publish"`
-	alive      float32 `json: "alive"`
+	ID         int64   `json:"id"`
+	Vhost      int64   `json:"vhost"`
+	Stream     int64   `json:"stream"`
+	IP         string  `json:"ip"`
+	PageURL    string  `json:"pageUrl"`
+	SwfURL     string  `json:"swfUrl"`
+	TcURL      string  `json:"tcUrl"`
+	URL        string  `json:"url"`
+	StreamType string  `json:"type"`
+	Publish    bool    `json:"publish"`
+	Alive      float64 `json:"alive"`
 }
 
 const apiurl = "http://lakis.eu:1985"
@@ -48,11 +49,12 @@ func main() {
 		kaczka := srsClientResponse{}
 		err = json.Unmarshal(streamsBody, &kaczka)
 		if err != nil {
+			fmt.Println(err)
 			w.Write([]byte("Unable to unmarshal response"))
 			return
 		}
 
-		fmt.Println(kaczka)
+		fmt.Println(kaczka.Clients)
 
 		w.Write((streamsBody))
 		// w.Write([]byte("welcome"))
