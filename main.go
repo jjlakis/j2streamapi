@@ -29,17 +29,24 @@ type srsSingleClient struct {
 	Alive      float64 `json:"alive"`
 }
 
-const apiurl = "http://lakis.eu:1985"
+type clientListResponse struct {
+	Username string `json:"username"`
+}
+
+const srsUrl = "http://lakis.eu:1985" // For local tests. Should be internal as running on backend.
+
+const mongoUsersString = "mongodb://mongodb/users"
 
 func main() {
 	r := chi.NewRouter()
 	r.Get("/streams", func(w http.ResponseWriter, r *http.Request) {
 
-		streams, err := http.Get(apiurl + "/api/v1/clients/")
+		streams, err := http.Get(srsUrl + "/api/v1/clients/")
 		if err != nil {
 			w.Write([]byte("Unable to get stream info from SRS API"))
 			return
 		}
+
 		streamsBody, err := ioutil.ReadAll(streams.Body)
 		if err != nil {
 			w.Write([]byte("Unable to read stream info retrieven from SRS API"))
@@ -54,10 +61,17 @@ func main() {
 			return
 		}
 
-		fmt.Println(kaczka.Clients)
-
-		w.Write((streamsBody))
 		// w.Write([]byte("welcome"))
 	})
+
+	r.Post("/validate", func(w http.ResponseWriter, r *http.Request) {
+
+		fmt.Println("401: Not authorized")
+		w.Write([]byte("401: Not authorized"))
+		w.WriteHeader(401)
+
+	})
+	http.ListenAndServe(":8080", r)
+
 	http.ListenAndServe(":8080", r)
 }
